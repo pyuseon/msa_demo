@@ -1,0 +1,32 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.6'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+}
+
+group = 'com.example'
+version = '1.0'
+description = 'Demo project for Spring Boot'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Eureka 서버 의존성
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+
+    // 테스트 의존성
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
