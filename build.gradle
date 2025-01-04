@@ -1,30 +1,68 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.6'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'java'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
+
 
 group = 'com.example'
 version = '1.0'
-description = 'Demo project for Spring Boot'
 sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
 }
 
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2020.0.3"
-	}
+ext {
+	springCloudVersion = '2021.0.3'
 }
 
 dependencies {
-	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+	// Spring Boot Starter JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Spring Boot Starter Web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Eureka Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	// DevTools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// H2 Database
+	runtimeOnly 'com.h2database:h2:1.3.176'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// ModelMapper
+	implementation 'org.modelmapper:modelmapper:2.3.8'
+
+	// MariaDB Driver
+	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
+
+	// Kafka (주석 처리된 부분 활성화 시 사용 가능)
+	// implementation 'org.springframework.kafka:spring-kafka'
+
+	// Spring Cloud Sleuth (Distributed Tracing)
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+	// Micrometer 및 Prometheus
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
