@@ -1,6 +1,7 @@
 package com.example.apigatewayservice.filter;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -15,7 +16,9 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Set;
 
 @Component
@@ -80,18 +83,22 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private boolean isJwtValid(String jwt) {
         boolean returnValue = true;
 
+
+
         String subject = null;
 
         try {
+            byte[] secretKeyBytes = Base64.getEncoder().encode(env.getProperty("token.secret").getBytes());
+            SecretKey secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
             subject = Jwts
                     .parser()
-                    .setSigningKey(env.getProperty("token.secret"))
+                    .setSigningKey(secretKey)
                     .parseClaimsJws(jwt).getBody()
                     .getSubject();
-        } catch (Exception ex) {
+        }  catch (Exception ex) {
+            log.error("JWT 검증 실패: " + ex.getMessage());
             returnValue = false;
         }
-
         if (subject == null || subject.isEmpty()) {
             returnValue = false;
         }
